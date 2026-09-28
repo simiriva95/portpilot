@@ -17,17 +17,45 @@ A tiny native macOS menu bar app that shows every listening port, grouped by pro
 
 ## Install
 
-Download the latest `.dmg` from [Releases](https://github.com/simiriva95/portpilot/releases), drag PortPilot to Applications and open it.
+1. Download `PortPilot-<version>.dmg` from [Releases](https://github.com/simiriva95/portpilot/releases).
+2. Open it and drag **PortPilot** to **Applications**.
+3. Sign it on your Mac (once per download, see below), then open it. The icon appears in the menu bar.
 
-If a build is not notarized, macOS blocks the first launch. Right-click the app → **Open**, or run:
+### Sign it yourself
+
+PortPilot is free and open source, and it isn't signed with an Apple Developer ID. The first time you open it, macOS stops it with *"PortPilot is damaged and can't be opened"* or *"Apple could not verify PortPilot is free of malware"*. That message is about the missing Apple signature, not about the app.
+
+Fix it once in Terminal:
 
 ```sh
+# 1. Remove the "downloaded from the internet" flag that triggers the block
 xattr -dr com.apple.quarantine /Applications/PortPilot.app
+
+# 2. Re-sign the app with a local (ad-hoc) signature made by your Mac
+codesign --force --deep --sign - /Applications/PortPilot.app
+
+# 3. Check the signature, then open it
+codesign --verify --deep --strict --verbose=2 /Applications/PortPilot.app
+open /Applications/PortPilot.app
 ```
+
+Step 3 should print `valid on disk` and `satisfies its Designated Requirement`. The `-` in step 2 means "ad-hoc": the signature is made on your Mac and trusted only there, which is what macOS needs to run an app that isn't from an identified developer.
+
+**Without Terminal:** open PortPilot once so macOS blocks it, then go to **System Settings → Privacy & Security**, scroll down to the message about PortPilot and click **Open Anyway**. On macOS 15 Sequoia and later, right-click → Open no longer skips the check, so use this or the commands above.
+
+**Updates:** repeat the steps after installing a new version. If **Launch at login** stops working after an update, turn it off and on again in PortPilot's Settings.
+
+**Verify the download (optional):** each release lists SHA-256 checksums in `SHA256SUMS.txt`. Compare them before removing the quarantine flag:
+
+```sh
+shasum -a 256 ~/Downloads/PortPilot-*.dmg
+```
+
+Prefer not to run a downloaded binary at all? [Build it from source](#build-from-source): it takes about a minute and needs no signing.
 
 ### Homebrew (coming soon)
 
-A Homebrew cask is planned once the first notarized release is out. It will be:
+A Homebrew cask is planned. It will be:
 
 ```sh
 brew install --cask portpilot

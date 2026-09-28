@@ -1,0 +1,16 @@
+PortPilot is free and open source, but it is not signed with an Apple
+Developer ID, so macOS blocks it the first time ("PortPilot is damaged"
+or "Apple could not verify PortPilot").
+
+1. Drag PortPilot to Applications.
+2. Open Terminal and run:
+
+   xattr -dr com.apple.quarantine /Applications/PortPilot.app
+   codesign --force --deep --sign - /Applications/PortPilot.app
+   open /Applications/PortPilot.app
+
+Without Terminal: open PortPilot once, then go to System Settings >
+Privacy & Security and click "Open Anyway" next to the PortPilot message.
+
+Repeat after every update. Full guide and source code:
+https://github.com/simiriva95/portpilot#sign-it-yourself

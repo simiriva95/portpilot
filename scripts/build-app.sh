@@ -39,6 +39,7 @@ ditto -c -k --keepParent "$BUNDLE" "$DIST/$APP-$VERSION.zip"
 STAGE="$(mktemp -d)"
 cp -R "$BUNDLE" "$STAGE/"
 ln -s /Applications "$STAGE/Applications"
+[ "$IDENTITY" = "-" ] && cp Resources/Install.txt "$STAGE/Install.txt"  # unsigned builds: how to open them
 hdiutil create -volname "$APP" -srcfolder "$STAGE" -ov -format UDZO "$DIST/$APP-$VERSION.dmg" >/dev/null
 rm -rf "$STAGE"
 [ "$IDENTITY" != "-" ] && codesign --force --sign "$IDENTITY" "$DIST/$APP-$VERSION.dmg"

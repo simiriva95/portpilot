@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added
+
+- Install guide for unsigned builds (remove quarantine, ad-hoc re-sign, Open Anyway), also shipped as `Install.txt` inside the DMG.
+- `SHA256SUMS.txt` attached to every release.
+
 ## [0.1.0] - 2026-09-28
 
 ### Added

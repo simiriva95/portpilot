@@ -54,10 +54,14 @@ jobs:
           rm "dist/PortPilot-$VERSION.zip"
           ditto -c -k --keepParent dist/PortPilot.app "dist/PortPilot-$VERSION.zip"
 
+      - name: Checksums
+        run: cd dist && shasum -a 256 *.dmg *.zip > SHA256SUMS.txt && cat SHA256SUMS.txt
+
       - name: Publish GitHub release
         uses: softprops/action-gh-release@v2
         with:
           files: |
             dist/*.dmg
             dist/*.zip
+            dist/SHA256SUMS.txt
           generate_release_notes: true
