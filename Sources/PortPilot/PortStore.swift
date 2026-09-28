@@ -73,7 +73,8 @@ final class PortStore: ObservableObject {
         timer?.invalidate()
         let interval = max(2, UserDefaults.standard.double(forKey: Prefs.refreshInterval))
         timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
-            Task { @MainActor in await self?.refresh() }
+            guard let self else { return }
+            Task { @MainActor in await self.refresh() }
         }
     }
 
