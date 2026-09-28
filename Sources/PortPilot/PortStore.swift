@@ -77,9 +77,9 @@ final class PortStore: ObservableObject {
             messages[process.pid] = nil
         case .stillRunning:
             stubborn.insert(process.pid)
-            messages[process.pid] = "\(process.displayName) is still running. Use Force Quit."
+            messages[process.pid] = String(localized: "\(process.displayName) is still running. Use Force Quit.")
         case .notPermitted:
-            messages[process.pid] = "Owned by another user. Quit it from Terminal with sudo."
+            messages[process.pid] = String(localized: "Owned by another user. Quit it from Terminal with sudo.")
         case .failed(let code):
             messages[process.pid] = String(cString: strerror(code))
         }

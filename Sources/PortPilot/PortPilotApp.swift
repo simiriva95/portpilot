@@ -28,9 +28,9 @@ struct MenuBarLabel: View {
         HStack(spacing: 3) {
             Image(systemName: "network")
             if count > 0 {
-                Text("\(count)").monospacedDigit()
+                Text(verbatim: "\(count)").monospacedDigit()
             }
         }
-        .accessibilityLabel(count == 1 ? "PortPilot, 1 dev server running" : "PortPilot, \(count) dev servers running")
+        .accessibilityLabel(Text("PortPilot, \(count) dev servers running"))
     }
 }

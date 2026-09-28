@@ -4,14 +4,25 @@ import SwiftUI
 struct PortsPanel: View {
     @EnvironmentObject private var store: PortStore
     @AppStorage(Prefs.showSystem) private var showSystem = true
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.dismiss) private var dismiss
     @State private var query = ""
     @State private var filter: Filter = .all
     @State private var confirmingKillAll = false
     @State private var listHeight: CGFloat = 0
+    @State private var selection: pid_t?
+    @FocusState private var searchFocused: Bool
 
-    enum Filter: String, CaseIterable, Identifiable {
-        case all = "All", dev = "Development", other = "System"
+    enum Filter: CaseIterable, Identifiable {
+        case all, dev, other
         var id: Self { self }
+        var title: LocalizedStringKey {
+            switch self {
+            case .all: return "All"
+            case .dev: return "Development"
+            case .other: return "System"
+            }
+        }
     }
 
     private var filtered: [PortProcess] {
@@ -40,7 +51,9 @@ struct PortsPanel: View {
             footer
         }
         .frame(width: 360)
+        .background(keyboardShortcuts)
         .task { await store.refresh() }
+        .onChange(of: query) { _ in selection = query.isEmpty ? nil : filtered.first?.pid }
     }
 
     // MARK: Sections
@@ -50,7 +63,8 @@ struct PortsPanel: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text("Listening ports")
                     .font(.system(size: 15, weight: .semibold))
-                Text("\(store.portCount) ports, \(store.processes.count) processes")
+                    .accessibilityAddTraits(.isHeader)
+                (Text("\(store.portCount) ports") + Text(verbatim: ", ") + Text("\(store.processes.count) processes"))
                     .font(.system(size: 12))
                     .foregroundStyle(.secondary)
                     .monospacedDigit()
@@ -60,8 +74,9 @@ struct PortsPanel: View {
                 Task { await store.refresh() }
             } label: {
                 Image(systemName: "arrow.clockwise")
-                    .rotationEffect(.degrees(store.isRefreshing ? 360 : 0))
-                    .animation(store.isRefreshing ? .linear(duration: 0.8).repeatForever(autoreverses: false) : .default,
+                    .rotationEffect(.degrees(store.isRefreshing && !reduceMotion ? 360 : 0))
+                    .opacity(store.isRefreshing && reduceMotion ? 0.4 : 1)
+                    .animation(store.isRefreshing && !reduceMotion ? .linear(duration: 0.8).repeatForever(autoreverses: false) : .default,
                                value: store.isRefreshing)
             }
             .buttonStyle(.borderless)
@@ -77,9 +92,12 @@ struct PortsPanel: View {
     private var controls: some View {
         VStack(spacing: 8) {
             HStack(spacing: 6) {
-                Image(systemName: "magnifyingglass").foregroundStyle(.secondary)
+                Image(systemName: "magnifyingglass")
+                    .foregroundStyle(.secondary)
+                    .accessibilityHidden(true)
                 TextField("Search port or process", text: $query)
                     .textFieldStyle(.plain)
+                    .focused($searchFocused)
                 if !query.isEmpty {
                     Button { query = "" } label: { Image(systemName: "xmark.circle.fill") }
                         .buttonStyle(.borderless)
@@ -92,7 +110,7 @@ struct PortsPanel: View {
             .background(Capsule(style: .continuous).fill(Color(nsColor: .quaternaryLabelColor)))
 
             Picker("Filter", selection: $filter) {
-                ForEach(Filter.allCases) { Text($0.rawValue).tag($0) }
+                ForEach(Filter.allCases) { Text($0.title).tag($0) }
             }
             .pickerStyle(.segmented)
             .labelsHidden()
@@ -117,21 +135,29 @@ struct PortsPanel: View {
             .padding(.horizontal, 24)
         } else {
             let clashing = store.clashingPorts
-            ScrollView {
-                VStack(spacing: 2) {
-                    ForEach(filtered) { process in
-                        ProcessRow(process: process, clashing: clashing)
+            ScrollViewReader { proxy in
+                ScrollView {
+                    VStack(spacing: 2) {
+                        ForEach(filtered) { process in
+                            ProcessRow(process: process, clashing: clashing, isSelected: selection == process.pid)
+                                .id(process.pid)
+                        }
                     }
+                    .padding(6)
+                    .background(GeometryReader { geo in
+                        // Preferences don't leave an NSScrollView-backed ScrollView, so read the size directly.
+                        Color.clear
+                            .onAppear { listHeight = geo.size.height }
+                            .onChange(of: geo.size.height) { listHeight = $0 }
+                    })
                 }
-                .padding(6)
-                .background(GeometryReader { geo in
-                    Color.clear
-                        .onAppear { listHeight = geo.size.height }
-                        .onChange(of: geo.size.height) { listHeight = $0 }
-                })
+                // Grows with its rows (and inline confirmations) up to 480 pt, then scrolls.
+                .frame(height: min(max(listHeight, 80), 480))
+                .onChange(of: selection) { pid in
+                    guard let pid else { return }
+                    if reduceMotion { proxy.scrollTo(pid) } else { withAnimation { proxy.scrollTo(pid) } }
+                }
             }
-            // Grows with its rows (and inline confirmations) up to 480 pt, then scrolls.
-            .frame(height: min(max(listHeight, 80), 480))
         }
     }
 
@@ -142,6 +168,7 @@ struct PortsPanel: View {
                     Text("Quit \(store.devProcessCount) dev servers?").font(.system(size: 12))
                     Spacer()
                     Button("Cancel") { confirmingKillAll = false }
+                        .buttonStyle(.bordered)
                     Button("Quit All") {
                         confirmingKillAll = false
                         Task { await store.terminateAllDevServers() }
@@ -174,6 +201,41 @@ struct PortsPanel: View {
             .keyboardShortcut("q")
         }
         .padding(6)
+    }
+
+    // MARK: Keyboard
+
+    /// Invisible buttons that own the panel's key equivalents; they fire even while the search field has focus.
+    private var keyboardShortcuts: some View {
+        Group {
+            Button("Search") { searchFocused = true }.keyboardShortcut("f")
+            Button("Previous") { moveSelection(by: -1) }.keyboardShortcut(.upArrow, modifiers: [])
+            Button("Next") { moveSelection(by: 1) }.keyboardShortcut(.downArrow, modifiers: [])
+            Button("Open") { openSelection() }.keyboardShortcut(.return, modifiers: [])
+            Button("Close") { escape() }.keyboardShortcut(.escape, modifiers: [])
+        }
+        .opacity(0)
+        .frame(width: 0, height: 0)
+        .accessibilityHidden(true)
+    }
+
+    private func moveSelection(by step: Int) {
+        let pids = filtered.map(\.pid)
+        guard !pids.isEmpty else { return }
+        let current = selection.flatMap { pids.firstIndex(of: $0) } ?? (step > 0 ? -1 : pids.count)
+        selection = pids[min(max(current + step, 0), pids.count - 1)]
+    }
+
+    /// Esc clears the search first, then closes the panel. dismiss() keeps MenuBarExtra's open state in sync;
+    /// closing the NSWindow directly leaves the status item highlighted and swallows the next click.
+    private func escape() {
+        if query.isEmpty { dismiss() } else { query = "" }
+    }
+
+    private func openSelection() {
+        guard let process = filtered.first(where: { $0.pid == selection }),
+              let url = process.ports.first(where: \.isLikelyHTTP)?.url else { return }
+        NSWorkspace.shared.open(url)
     }
 }
 

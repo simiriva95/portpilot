@@ -13,6 +13,7 @@ struct ProcessIcon: View {
                 .resizable()
                 .interpolation(.high)
                 .aspectRatio(contentMode: .fit)
+                .accessibilityHidden(true)
         } else {
             RoundedRectangle(cornerRadius: 7, style: .continuous)
                 .fill(Brand.tint(for: process))
@@ -128,7 +129,7 @@ extension View {
 // MARK: - Native-looking menu rows in the footer
 
 struct MenuItemLabel: View {
-    let title: String
+    let title: LocalizedStringKey
     var trailing: String? = nil
     var destructive = false
 

@@ -10,11 +10,6 @@ public struct ListeningPort: Identifiable, Hashable, Sendable {
 
     public var id: String { "\(proto.rawValue)-\(port)" }
 
-    public var hostLabel: String {
-        if proto == .udp { return "UDP" }
-        return loopbackOnly ? "localhost" : "all"
-    }
-
     /// Ports that are almost never HTTP: no "open in browser" for these.
     private static let nonHTTP: Set<Int> = [22, 53, 1433, 2181, 3306, 5353, 5432, 5672, 6379, 9042, 9092, 11211, 27017]
 

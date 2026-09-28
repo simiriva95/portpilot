@@ -7,7 +7,9 @@ struct ProcessRow: View {
     @AppStorage(Prefs.confirmBeforeKill) private var confirmBeforeKill = true
     let process: PortProcess
     let clashing: Set<ListeningPort.ID>
+    var isSelected = false
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var hovering = false
     @State private var confirming = false
     @State private var confirmingForce = false
@@ -33,13 +35,16 @@ struct ProcessRow: View {
                             .truncationMode(.middle)
                     }
                     .help(process.fullCommandLine)
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel(accessibilityTitle)
+                    .accessibilityAddTraits(isSelected ? .isSelected : [])
                     Spacer(minLength: 0)
                     trailingControl
                 }
 
                 if confirming {
                     confirmBar
-                        .transition(.opacity.combined(with: .move(edge: .top)))
+                        .transition(reduceMotion ? .opacity : .opacity.combined(with: .move(edge: .top)))
                 }
 
                 FlowLayout(spacing: 6) {
@@ -58,11 +63,25 @@ struct ProcessRow: View {
         .padding(8)
         .background(
             RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .fill(hovering || confirming ? Color(nsColor: .quaternaryLabelColor) : .clear)
+                .fill(hovering || confirming || isSelected ? Color(nsColor: .quaternaryLabelColor) : .clear)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .strokeBorder(Color.accentColor, lineWidth: 1.5)
+                .opacity(isSelected ? 1 : 0)
         )
         .onHover { hovering = $0 }
-        .animation(.easeOut(duration: 0.15), value: confirming)
+        .animation(reduceMotion ? nil : .easeOut(duration: 0.15), value: confirming)
         .contextMenu { contextMenu }
+        .accessibilityElement(children: .contain)
+        .accessibilityAction(named: Text("Quit")) { requestQuit() }
+    }
+
+    /// "Vite, frontend-admin, ports 5173 and 5174"
+    private var accessibilityTitle: String {
+        let list = process.ports.map { String($0.port) }.formatted(.list(type: .and))
+        let ports = process.ports.count == 1 ? String(localized: "port \(list)") : String(localized: "ports \(list)")
+        return [process.displayName, process.projectHint, ports].compactMap { $0 }.joined(separator: ", ")
     }
 
     @ViewBuilder
@@ -75,6 +94,7 @@ struct ProcessRow: View {
                 .foregroundStyle(.secondary)
                 .frame(width: 24, height: 24)
                 .help("Owned by \(process.user). Needs administrator access.")
+                .accessibilityLabel("Owned by \(process.user)")
         } else if isStubborn {
             Button("Force Quit") { Task { await store.terminate(process, force: true) } }
                 .buttonStyle(.bordered)
@@ -168,7 +188,7 @@ struct PortChip: View {
                 Text(verbatim: "\(port.port)")
                     .font(.system(size: 15, weight: .semibold))
                     .monospacedDigit()
-                Text(port.hostLabel)
+                Text(port.proto == .udp ? "UDP" : port.loopbackOnly ? "localhost" : "all")
                     .font(.system(size: 10.5))
                     .foregroundStyle(.secondary)
                 if port.isLikelyHTTP {
@@ -191,7 +211,9 @@ struct PortChip: View {
         }
         .buttonStyle(.plain)
         .help(helpText)
-        .accessibilityLabel(port.isLikelyHTTP ? "Open localhost \(port.port) in browser" : "Copy port \(port.port)")
+        // String(port) so VoiceOver reads "5173", not a locale-grouped "5.173".
+        .accessibilityLabel(port.isLikelyHTTP ? "Open localhost \(String(port.port)) in browser" : "Copy port \(String(port.port))")
+        .accessibilityHint(isClashing ? Text("Another process is also bound to this port.") : Text(""))
         .contextMenu {
             if let url = port.url, port.isLikelyHTTP {
                 Button("Open in Browser") { NSWorkspace.shared.open(url) }
@@ -202,10 +224,11 @@ struct PortChip: View {
     }
 
     private var helpText: String {
-        var text = port.isLikelyHTTP ? "Open http://localhost:\(port.port)" : "Copy \(port.port)"
-        if isClashing { text += "\nAnother process is also bound to \(port.port)." }
-        if !port.loopbackOnly && port.proto == .tcp { text += "\nReachable from your network." }
-        return text
+        let number = String(port.port)
+        var lines = [port.isLikelyHTTP ? String(localized: "Open http://localhost:\(number)") : String(localized: "Copy \(number)")]
+        if isClashing { lines.append(String(localized: "Another process is also bound to \(number).")) }
+        if !port.loopbackOnly && port.proto == .tcp { lines.append(String(localized: "Reachable from your network.")) }
+        return lines.joined(separator: "\n")
     }
 }
 
