@@ -84,25 +84,30 @@ struct SettingsView: View {
     // MARK: Mascot
 
     private var mascotPicker: some View {
-        HStack(alignment: .center, spacing: 12) {
-            Picker("Mascot", selection: $mascotID) {
-                ForEach(Mascot.allCases) { Text($0.title).tag($0.rawValue) }
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Mascot")
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 4), spacing: 8) {
+                ForEach(Mascot.allCases) { mascot in
+                    Button {
+                        mascotID = mascot.rawValue
+                        if mascot == .custom && !CustomGIF.exists { chooseGIF() }
+                    } label: {
+                        MascotCard(mascot: mascot, selected: mascot.rawValue == mascotID)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(mascot.title)
+                    .accessibilityAddTraits(mascot.rawValue == mascotID ? .isSelected : [])
+                }
             }
-            if let mascot = Mascot(rawValue: mascotID), mascot != .none {
-                GIFView(url: mascot.url(.idle))
-                    .frame(width: 36, height: 36)
-                    .id(customVersion)
-                    .accessibilityHidden(true)
-            }
+            .id(customVersion)
             if mascotID == Mascot.custom.rawValue {
                 Button("Choose GIF…", action: chooseGIF)
             }
-        }
-        .overlay(alignment: .bottomLeading) {
             if let gifError {
-                Text(gifError).font(.caption).foregroundStyle(Color(nsColor: .systemRed)).offset(y: 16)
+                Text(gifError).font(.caption).foregroundStyle(Color(nsColor: .systemRed))
             }
         }
+        .padding(.vertical, 4)
     }
 
     private func chooseGIF() {
@@ -118,6 +123,39 @@ struct SettingsView: View {
         } catch {
             gifError = error.localizedDescription
         }
+    }
+}
+
+/// Mascot preview; only the selected one animates, so twelve GIFs don't play at once.
+private struct MascotCard: View {
+    let mascot: Mascot
+    let selected: Bool
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        VStack(spacing: 4) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .fill(Color(nsColor: .quaternaryLabelColor))
+                if mascot == .none {
+                    Image(systemName: "nosign").font(.system(size: 18)).foregroundStyle(.secondary)
+                } else if mascot == .custom && !CustomGIF.exists {
+                    Image(systemName: "photo.badge.plus").font(.system(size: 18)).foregroundStyle(.secondary)
+                } else {
+                    GIFView(url: mascot.url(.idle), animates: selected && !reduceMotion)
+                        .frame(width: 36, height: 36)
+                }
+            }
+            .frame(height: 50)
+            .overlay(
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .strokeBorder(selected ? AnyShapeStyle(.tint) : AnyShapeStyle(Color.clear), lineWidth: 2.5)
+            )
+            Text(mascot.title)
+                .font(.system(size: 11, weight: selected ? .semibold : .regular))
+                .lineLimit(1)
+        }
+        .contentShape(Rectangle())
     }
 }
 

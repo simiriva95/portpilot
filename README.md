@@ -11,7 +11,7 @@ A tiny native macOS menu bar app that shows every listening port, grouped by pro
 - **Open in browser**: click a port chip to open `http://localhost:<port>`, right-click to copy.
 - **Port clashes**: highlights ports bound by two processes (hello, AirPlay Receiver on 5000).
 - **Keyboard first**: `↑`/`↓` select a row, `Return` opens it, `⌘⌫` quits it, `⌥⌘⌫` force quits it, `⇧⌘⌫` quits every dev server, `⌘F` searches, `⌘R` refreshes, `Esc` backs out (confirmation, search, panel). Type `3000` and hit `⌘⌫` to free a port.
-- **Themes and mascots**: System, Synthwave, Terminal, Pastel, Sunset and Ocean, plus your own accent color. A pixel-art cat, penguin, fox or frog (or your own GIF) naps when nothing is running, cheers when a server quits and hops in the menu bar when servers start or stop.
+- **Themes and mascots**: System, Synthwave, Terminal, Pastel, Sunset and Ocean, plus your own accent color. A pixel-art cat, penguin, fox, frog, bunny, panda, duck, owl, axolotl or capybara (or your own GIF) naps when nothing is running, cheers when a server quits and hops in the menu bar when servers start or stop.
 - **Accessible**: VoiceOver labels on every row and button, text in system colors (Dark Mode and Increase Contrast just work; themes drop their tint with Increase Contrast), animations pause with Reduce Motion.
 - English and Italian. Native SwiftUI, no dependencies, ~1 MB. macOS 13 Ventura or later.
 

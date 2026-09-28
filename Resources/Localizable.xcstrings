@@ -211,12 +211,42 @@
         }
       }
     },
+    "Axolotl": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Axolotl"
+          }
+        }
+      }
+    },
+    "Bunny": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coniglio"
+          }
+        }
+      }
+    },
     "Cancel": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "Annulla"
+          }
+        }
+      }
+    },
+    "Capybara": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Capibara"
           }
         }
       }
@@ -366,7 +396,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "GIF personalizzata"
+            "value": "La tua GIF"
           }
         }
       }
@@ -387,6 +417,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sviluppo"
+          }
+        }
+      }
+    },
+    "Duck": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Papera"
           }
         }
       }
@@ -581,6 +621,16 @@
         }
       }
     },
+    "Owl": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gufo"
+          }
+        }
+      }
+    },
     "Owned by %@": {
       "localizations": {
         "it": {
@@ -607,6 +657,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Appartiene a un altro utente. Terminalo dal Terminale con sudo."
+          }
+        }
+      }
+    },
+    "Panda": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Panda"
           }
         }
       }

@@ -4,7 +4,7 @@ import PortPilotCore
 import SwiftUI
 
 enum Mascot: String, CaseIterable, Identifiable {
-    case cat, penguin, fox, frog, custom, none
+    case cat, penguin, fox, frog, bunny, panda, duck, owl, axolotl, capybara, custom, none
 
     enum Mood: String { case idle, sleep, cheer }
 
@@ -16,6 +16,12 @@ enum Mascot: String, CaseIterable, Identifiable {
         case .penguin: return "Penguin"
         case .fox: return "Fox"
         case .frog: return "Frog"
+        case .bunny: return "Bunny"
+        case .panda: return "Panda"
+        case .duck: return "Duck"
+        case .owl: return "Owl"
+        case .axolotl: return "Axolotl"
+        case .capybara: return "Capybara"
         case .custom: return "Custom GIF"
         case .none: return "None"
         }
