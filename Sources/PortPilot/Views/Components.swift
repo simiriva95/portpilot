@@ -26,6 +26,7 @@ struct ProcessIcon: View {
 }
 
 /// Real app icons for GUI apps; nil for CLI servers, which get a tinted glyph tile instead.
+@MainActor
 final class IconCache {
     static let shared = IconCache()
     private let cache = NSCache<NSString, NSImage>()
