@@ -56,17 +56,27 @@ enum DevDetector {
         return p.executableName
     }
 
-    /// The project folder the server was started from, when the path or arguments reveal it.
+    /// The project folder the server was started from: the folder above node_modules, bin/Debug, .venv…
+    /// in the executable or arguments, else the working directory.
     static func projectHint(of p: PortProcess) -> String? {
         let markers = ["/node_modules/", "/bin/Debug/", "/bin/Release/", "/target/debug/", "/target/release/", "/.venv/", "/vendor/"]
-        let candidates = [p.executablePath].compactMap { $0 } + p.arguments
-        for arg in candidates {
+        let cwd = p.workingDirectory
+        let candidates = [p.executablePath].compactMap { $0 } + p.arguments.map { absolute($0, in: cwd) } + [cwd.map { $0 + "/" }].compactMap { $0 }
+        // ponytail: npx caches live in ~/.npm/_npx/<hash>/node_modules, global installs in …/lib/node_modules
+        for path in candidates where !path.contains("/_npx/") {
             for marker in markers {
-                if let r = arg.range(of: marker) {
-                    return (String(arg[..<r.lowerBound]) as NSString).lastPathComponent
-                }
+                guard let r = path.range(of: marker) else { continue }
+                let name = (String(path[..<r.lowerBound]) as NSString).lastPathComponent
+                if name != "lib" { return name }
             }
         }
-        return nil
+        guard let cwd, cwd != "/", cwd != NSHomeDirectory() else { return nil }
+        return (cwd as NSString).lastPathComponent
+    }
+
+    /// "bin/Debug/net8.0/Api.dll" relative to the working directory → absolute path.
+    private static func absolute(_ arg: String, in cwd: String?) -> String {
+        guard let cwd, arg.contains("/"), !arg.hasPrefix("/"), !arg.hasPrefix("-"), !arg.contains("://") else { return arg }
+        return (cwd as NSString).appendingPathComponent(arg)
     }
 }

@@ -30,6 +30,7 @@ public struct PortProcess: Identifiable, Hashable {
     public let user: String
     public var executablePath: String?
     public var arguments: [String] = []
+    public var workingDirectory: String?
     public var ports: [ListeningPort] = []
 
     public var displayName: String = ""
