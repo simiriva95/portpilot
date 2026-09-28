@@ -60,7 +60,7 @@ final class PortStore: ObservableObject {
         defer { isRefreshing = false }
 
         let result = await PortScanner.scan(includeUDP: UserDefaults.standard.bool(forKey: Prefs.includeUDP))
-        processes = result
+        if result != processes { processes = result }  // no re-render when nothing changed
         let alive = Set(result.map(\.pid))
         stubborn = stubborn.intersection(alive)
         messages = messages.filter { alive.contains($0.key) }
