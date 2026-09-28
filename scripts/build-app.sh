@@ -22,6 +22,7 @@ mkdir -p "$BUNDLE/Contents/MacOS" "$BUNDLE/Contents/Resources"
 cp "$BIN_DIR/$APP" "$BUNDLE/Contents/MacOS/$APP"
 sed -e "s/__VERSION__/$VERSION/" -e "s/__BUILD__/$BUILD/" Resources/Info.plist > "$BUNDLE/Contents/Info.plist"
 [ -f Resources/AppIcon.icns ] && cp Resources/AppIcon.icns "$BUNDLE/Contents/Resources/"
+cp -R Sources/PortPilot/Resources/GIFs "$BUNDLE/Contents/Resources/"
 # SwiftPM copies .xcstrings uncompiled, so compile the catalog into <lang>.lproj for Bundle.main.
 xcrun xcstringstool compile Resources/Localizable.xcstrings --output-directory "$BUNDLE/Contents/Resources"
 

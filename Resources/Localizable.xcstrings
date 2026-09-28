@@ -141,12 +141,32 @@
         }
       }
     },
+    "Accent color": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Colore di accento"
+          }
+        }
+      }
+    },
     "All": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "Tutti"
+          }
+        }
+      }
+    },
+    "Animate the menu bar icon when servers start or stop": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anima l'icona nella barra dei menu quando un server parte o si ferma"
           }
         }
       }
@@ -171,6 +191,16 @@
         }
       }
     },
+    "Appearance": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aspetto"
+          }
+        }
+      }
+    },
     "Ask before quitting a dev server": {
       "localizations": {
         "it": {
@@ -191,12 +221,62 @@
         }
       }
     },
+    "Cat": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gatto"
+          }
+        }
+      }
+    },
+    "Celebrate when a server quits": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festeggia quando un server viene terminato"
+          }
+        }
+      }
+    },
     "Change the filter or search another port.": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "Cambia filtro o cerca un'altra porta."
+          }
+        }
+      }
+    },
+    "Choose GIF…": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scegli GIF…"
+          }
+        }
+      }
+    },
+    "Choose a GIF for your mascot": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scegli una GIF per la tua mascotte"
+          }
+        }
+      }
+    },
+    "Choose a GIF smaller than 10 MB.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scegli una GIF più piccola di 10 MB."
           }
         }
       }
@@ -281,12 +361,42 @@
         }
       }
     },
+    "Custom GIF": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GIF personalizzata"
+          }
+        }
+      }
+    },
+    "Custom accent color": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Colore di accento personalizzato"
+          }
+        }
+      }
+    },
     "Development": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "Sviluppo"
+          }
+        }
+      }
+    },
+    "Esc": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esc"
           }
         }
       }
@@ -307,6 +417,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Uscita forzata"
+          }
+        }
+      }
+    },
+    "Fox": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Volpe"
+          }
+        }
+      }
+    },
+    "Frog": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rana"
           }
         }
       }
@@ -351,6 +481,16 @@
         }
       }
     },
+    "Mascot": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mascotte"
+          }
+        }
+      }
+    },
     "Next": {
       "localizations": {
         "it": {
@@ -377,6 +517,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nessuna porta in uso"
+          }
+        }
+      }
+    },
+    "None": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nessuna"
+          }
+        }
+      }
+    },
+    "Ocean": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oceano"
           }
         }
       }
@@ -447,6 +607,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Appartiene a un altro utente. Terminalo dal Terminale con sudo."
+          }
+        }
+      }
+    },
+    "Pastel": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pastello"
+          }
+        }
+      }
+    },
+    "Penguin": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pinguino"
           }
         }
       }
@@ -661,6 +841,16 @@
         }
       }
     },
+    "Return": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invio"
+          }
+        }
+      }
+    },
     "Search": {
       "localizations": {
         "it": {
@@ -721,12 +911,52 @@
         }
       }
     },
+    "Sunset": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tramonto"
+          }
+        }
+      }
+    },
+    "Synthwave": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Synthwave"
+          }
+        }
+      }
+    },
     "System": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "Sistema"
+          }
+        }
+      }
+    },
+    "Terminal": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Terminale"
+          }
+        }
+      }
+    },
+    "That file is not a GIF.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il file non è una GIF."
           }
         }
       }

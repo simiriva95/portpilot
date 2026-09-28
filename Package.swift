@@ -8,7 +8,8 @@ let package = Package(
         .target(name: "PortPilotCore"),
         .executableTarget(
             name: "PortPilot",
-            dependencies: ["PortPilotCore"]
+            dependencies: ["PortPilotCore"],
+            resources: [.copy("Resources/GIFs")]
         ),
         .testTarget(
             name: "PortPilotTests",

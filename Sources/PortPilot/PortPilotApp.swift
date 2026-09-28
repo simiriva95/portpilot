@@ -10,7 +10,7 @@ struct PortPilotApp: App {
             PortsPanel()
                 .environmentObject(store)
         } label: {
-            MenuBarLabel(count: store.devProcessCount)
+            MenuBarLabel(count: store.devProcessCount, frame: store.menuBarFrame)
         }
         .menuBarExtraStyle(.window)
 
@@ -23,14 +23,24 @@ struct PortPilotApp: App {
 
 struct MenuBarLabel: View {
     let count: Int
+    let frame: Int?
+    @AppStorage(Prefs.mascot) private var mascot = Mascot.cat.rawValue
 
     var body: some View {
         HStack(spacing: 3) {
-            Image(systemName: "network")
+            if let frame, let image = Mascot(rawValue: mascot)?.menuBarFrames[safe: frame] {
+                Image(nsImage: image)
+            } else {
+                Image(systemName: "network")
+            }
             if count > 0 {
                 Text(verbatim: "\(count)").monospacedDigit()
             }
         }
         .accessibilityLabel(Text("PortPilot, \(count) dev servers running"))
     }
+}
+
+extension Array {
+    subscript(safe index: Int) -> Element? { indices.contains(index) ? self[index] : nil }
 }

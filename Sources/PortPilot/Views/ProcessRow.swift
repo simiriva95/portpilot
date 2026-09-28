@@ -4,16 +4,16 @@ import AppKit
 
 struct ProcessRow: View {
     @EnvironmentObject private var store: PortStore
-    @AppStorage(Prefs.confirmBeforeKill) private var confirmBeforeKill = true
+    @Environment(\.theme) private var theme
     let process: PortProcess
     let clashing: Set<ListeningPort.ID>
     var isSelected = false
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var hovering = false
-    @State private var confirming = false
-    @State private var confirmingForce = false
 
+    private var confirming: Bool { store.pendingQuit?.pid == process.pid }
+    private var confirmingForce: Bool { store.pendingQuit?.force ?? false }
     private var isBusy: Bool { store.busy.contains(process.pid) }
     private var isStubborn: Bool { store.stubborn.contains(process.pid) }
 
@@ -49,7 +49,7 @@ struct ProcessRow: View {
 
                 FlowLayout(spacing: 6) {
                     ForEach(process.ports) { port in
-                        PortChip(port: port, isClashing: clashing.contains(port.id))
+                        PortChip(port: port, isClashing: clashing.contains(port.id), tinted: !theme.isNative)
                     }
                 }
 
@@ -67,14 +67,14 @@ struct ProcessRow: View {
         )
         .overlay(
             RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .strokeBorder(Color.accentColor, lineWidth: 1.5)
+                .strokeBorder(.tint, lineWidth: 1.5)
                 .opacity(isSelected ? 1 : 0)
         )
         .onHover { hovering = $0 }
         .animation(reduceMotion ? nil : .easeOut(duration: 0.15), value: confirming)
         .contextMenu { contextMenu }
         .accessibilityElement(children: .contain)
-        .accessibilityAction(named: Text("Quit")) { requestQuit() }
+        .accessibilityAction(named: Text("Quit")) { store.requestQuit(process) }
     }
 
     /// "Vite, frontend-admin, ports 5173 and 5174"
@@ -103,7 +103,7 @@ struct ProcessRow: View {
                 .tint(.red)
         } else {
             Button {
-                requestQuit()
+                store.requestQuit(process)
             } label: {
                 Image(systemName: "xmark.circle")
                     .font(.system(size: 15))
@@ -123,14 +123,13 @@ struct ProcessRow: View {
                 .font(.system(size: 12))
                 .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 4)
-            Button("Cancel") { confirming = false }
+            Button("Cancel") { store.pendingQuit = nil }
                 .buttonStyle(.bordered)
-            Button(confirmingForce ? "Force Quit" : "Quit") {
-                confirming = false
-                Task { await store.terminate(process, force: confirmingForce) }
-            }
-            .buttonStyle(.bordered)
-            .tint(.red)
+                .help("Esc")
+            Button(confirmingForce ? "Force Quit" : "Quit") { store.confirmPendingQuit() }
+                .buttonStyle(.bordered)
+                .tint(.red)
+                .help("Return")
         }
         .capsuleButtons()
         .controlSize(.small)
@@ -156,18 +155,8 @@ struct ProcessRow: View {
         }
         if process.isCurrentUser {
             Divider()
-            Button("Quit") { requestQuit() }
-            Button("Force Quit") { requestQuit(force: true) }
-        }
-    }
-
-    /// System and app processes always ask first; dev servers only if the setting says so.
-    private func requestQuit(force: Bool = false) {
-        if confirmBeforeKill || process.kind != .dev {
-            confirmingForce = force
-            confirming = true
-        } else {
-            Task { await store.terminate(process, force: force) }
+            Button("Quit") { store.requestQuit(process) }
+            Button("Force Quit") { store.requestQuit(process, force: true) }
         }
     }
 }
@@ -175,6 +164,8 @@ struct ProcessRow: View {
 struct PortChip: View {
     let port: ListeningPort
     let isClashing: Bool
+    /// Themes fill chips with their accent instead of the native control background.
+    var tinted = false
 
     var body: some View {
         Button {
@@ -194,7 +185,7 @@ struct PortChip: View {
                 if port.isLikelyHTTP {
                     Image(systemName: "arrow.up.right")
                         .font(.system(size: 8, weight: .bold))
-                        .foregroundStyle(Color.accentColor)
+                        .foregroundStyle(.tint)
                 }
             }
             .padding(.leading, 8)
@@ -202,7 +193,7 @@ struct PortChip: View {
             .frame(height: 26)
             .background(
                 Capsule(style: .continuous)
-                    .fill(Color(nsColor: .controlBackgroundColor))
+                    .fill(tinted ? AnyShapeStyle(.tint.opacity(0.16)) : AnyShapeStyle(Color(nsColor: .controlBackgroundColor)))
             )
             .overlay(
                 Capsule(style: .continuous)

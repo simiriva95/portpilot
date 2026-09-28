@@ -10,8 +10,9 @@ A tiny native macOS menu bar app that shows every listening port, grouped by pro
 - **Quit safely**: SIGTERM first, Force Quit (SIGKILL) only if the process ignores it. System and app processes always ask first; processes of other users are shown locked and are never signalled.
 - **Open in browser**: click a port chip to open `http://localhost:<port>`, right-click to copy.
 - **Port clashes**: highlights ports bound by two processes (hello, AirPlay Receiver on 5000).
-- **Keyboard first**: `↑`/`↓` select a row, `Return` opens it, `⌘F` searches, `⌘R` refreshes, `Esc` clears the search or closes the panel.
-- **Accessible**: VoiceOver labels on every row and button, system colors only (Dark Mode and Increase Contrast just work), respects Reduce Motion.
+- **Keyboard first**: `↑`/`↓` select a row, `Return` opens it, `⌘⌫` quits it, `⌥⌘⌫` force quits it, `⇧⌘⌫` quits every dev server, `⌘F` searches, `⌘R` refreshes, `Esc` backs out (confirmation, search, panel). Type `3000` and hit `⌘⌫` to free a port.
+- **Themes and mascots**: System, Synthwave, Terminal, Pastel, Sunset and Ocean, plus your own accent color. A pixel-art cat, penguin, fox or frog (or your own GIF) naps when nothing is running, cheers when a server quits and hops in the menu bar when servers start or stop.
+- **Accessible**: VoiceOver labels on every row and button, text in system colors (Dark Mode and Increase Contrast just work; themes drop their tint with Increase Contrast), animations pause with Reduce Motion.
 - English and Italian. Native SwiftUI, no dependencies, ~1 MB. macOS 13 Ventura or later.
 
 ## Install
@@ -60,9 +61,10 @@ Issues and pull requests are welcome.
 
 - Keep it dependency-free and native: SwiftUI, AppKit and Foundation only.
 - Non-UI logic lives in `Sources/PortPilotCore` and should come with a test in `Tests/PortPilotTests`. Framework detection is table-driven in `DevDetector.swift`: adding a stack is usually a one-line change plus a test case.
-- Use system semantic colors, never hex values, so appearance and accessibility settings keep working.
+- Outside the theme presets in `Theme.swift`, use system semantic colors, never hex values, so appearance and accessibility settings keep working.
 - UI strings go in `Resources/Localizable.xcstrings` (English and Italian). New languages are welcome.
-- The app icon is generated from `Resources/AppIcon.svg` with `./scripts/make-icon.sh`.
+- The app icon is generated from `Resources/AppIcon.svg` with `./scripts/make-icon.sh`, the mascot GIFs from the ASCII sprites in `scripts/make-gifs.swift` (`swift scripts/make-gifs.swift preview.png` also writes a contact sheet). New animals welcome.
+- Theme text stays in semantic colors; a theme only sets the accent, the background wash and the icon palette.
 - Run `swift build` and `swift test` before opening a PR, and use [Conventional Commits](https://www.conventionalcommits.org) (`feat:`, `fix:`, `docs:`…).
 
 ## Releasing

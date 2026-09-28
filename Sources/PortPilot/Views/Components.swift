@@ -6,6 +6,7 @@ import AppKit
 
 struct ProcessIcon: View {
     let process: PortProcess
+    @Environment(\.theme) private var theme
 
     var body: some View {
         if let image = IconCache.shared.icon(for: process) {
@@ -16,7 +17,7 @@ struct ProcessIcon: View {
                 .accessibilityHidden(true)
         } else {
             RoundedRectangle(cornerRadius: 7, style: .continuous)
-                .fill(Brand.tint(for: process))
+                .fill(Brand.tint(for: process, palette: theme.palette))
                 .overlay(
                     Text(Brand.glyph(for: process))
                         .font(.system(size: 11, weight: .bold))
@@ -67,11 +68,13 @@ enum Brand {
         "java": ("J", Color(nsColor: .systemOrange))
     ]
 
-    static func tint(for p: PortProcess) -> Color {
-        if let hit = known[p.displayName] ?? known[p.executableName] { return hit.1 }
+    /// Brand color when known; with a themed palette every dev server takes a theme color instead.
+    static func tint(for p: PortProcess, palette themed: [Color]? = nil) -> Color {
         if p.kind != .dev { return Color(nsColor: .systemGray) }
-        let palette: [NSColor] = [.systemBlue, .systemIndigo, .systemPurple, .systemPink, .systemOrange, .systemBrown, .systemTeal]
         let hash = p.displayName.unicodeScalars.reduce(0) { ($0 &* 31 &+ Int($1.value)) & 0xFFFF }
+        if let themed { return themed[hash % themed.count] }
+        if let hit = known[p.displayName] ?? known[p.executableName] { return hit.1 }
+        let palette: [NSColor] = [.systemBlue, .systemIndigo, .systemPurple, .systemPink, .systemOrange, .systemBrown, .systemTeal]
         return Color(nsColor: palette[hash % palette.count])
     }
 
@@ -130,14 +133,23 @@ extension View {
 
 struct MenuItemLabel: View {
     let title: LocalizedStringKey
+    var badge: Int? = nil
     var trailing: String? = nil
     var destructive = false
 
     var body: some View {
-        HStack {
+        HStack(spacing: 6) {
             Text(title)
+            if let badge, badge > 0 {
+                Text(verbatim: "\(badge)")
+                    .font(.system(size: 11, weight: .semibold))
+                    .monospacedDigit()
+                    .padding(.horizontal, 6)
+                    .background(Capsule(style: .continuous).fill(.tint.opacity(0.18)))
+            }
             Spacer()
-            if let trailing { Text(trailing).foregroundStyle(.secondary).monospacedDigit() }
+            // Shortcut glyphs are visual only; VoiceOver reads the title.
+            if let trailing { Text(verbatim: trailing).foregroundStyle(.secondary).accessibilityHidden(true) }
         }
         .font(.system(size: 13))
         .foregroundStyle(destructive ? Color(nsColor: .systemRed) : Color.primary)
