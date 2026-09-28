@@ -82,14 +82,14 @@ final class PortScannerTests: XCTestCase {
         Proto Recv-Q Send-Q  Local Address          Foreign Address        (state)          rxbytes      txbytes  rhiwat  shiwat          process:pid    state  options           gencnt    flags   flags1 usecnt rtncnt fltrs
         tcp4       0      0  127.0.0.1.8021         *.*                    LISTEN                 0            0  131072  131072          launchd:1      00180 00000006 0000000000000ad2 00000000 00000800      1      0 000000
         tcp6       0      0  ::1.8021               *.*                    LISTEN                 0            0  131072  131072          launchd:1      00180 00000006 0000000000000ad1 00000000 00000800      1      0 000000
-        tcp46      0      0  *.5948                 *.*                    LISTEN                 0            0  131072  131072 MSP Anywhere Dae:602    00180 00000006 0000000000310e22 00000000 00000800      1      0 000000
+        tcp46      0      0  *.5948                 *.*                    LISTEN                 0            0  131072  131072 Remote Agent Dae:602    00180 00000006 0000000000310e22 00000000 00000800      1      0 000000
         tcp4       0      0  127.0.0.1.5173         127.0.0.1.61234        ESTABLISHED            0            0  131072  131072             node:4711   00100 00000106 00000000002bf8e4 00000001 00000800      1      0 000000
         """
         let processes = PortScanner.parseNetstat(output: output)
         XCTAssertEqual(processes.map(\.pid), [1, 602])
         XCTAssertEqual(processes[0].ports.map(\.port), [8021])
         XCTAssertEqual(processes[0].ports.map(\.loopbackOnly), [true])
-        XCTAssertEqual(processes[1].command, "MSP Anywhere Dae")
+        XCTAssertEqual(processes[1].command, "Remote Agent Dae")
         XCTAssertEqual(processes[1].ports.map(\.loopbackOnly), [false])
     }
 

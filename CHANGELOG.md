@@ -5,12 +5,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
-### Added
-
-- Quick quit shortcuts: `⌘⌫` quits the selected row, `⌥⌘⌫` force quits it, `⇧⌘⌫` quits all dev servers; `Return` confirms and `Esc` cancels, with a shortcut hint bar under the list.
-- Themes (System, Synthwave, Terminal, Pastel, Sunset, Ocean) and a custom accent color.
-- Pixel-art mascots (cat, penguin, fox, frog, bunny, panda, duck, owl, axolotl, capybara, dino, hedgehog, octopus) or a custom GIF: idle in the header, asleep in the empty state, cheering after a quit, hopping in the menu bar when the dev server count changes.
-
 ## [0.1.0] - 2026-09-28
 
 ### Added
@@ -24,6 +18,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - English and Italian localization.
 - Launch at login.
 - Universal `.dmg` and `.zip` built by `scripts/build-app.sh` and the release workflow.
+- Quick quit shortcuts: `⌘⌫` quits the selected row, `⌥⌘⌫` force quits it, `⇧⌘⌫` quits all dev servers; `Return` confirms and `Esc` cancels, with a shortcut hint bar under the list.
+- Themes (System, Synthwave, Terminal, Pastel, Sunset, Ocean) and a custom accent color.
+- Pixel-art mascots (cat, penguin, fox, frog, bunny, panda, duck, owl, axolotl, capybara, dino, hedgehog, octopus) or a custom GIF: idle in the header, asleep in the empty state, cheering after a quit, hopping in the menu bar when the dev server count changes.
 
 [Unreleased]: https://github.com/simiriva95/portpilot/compare/v0.1.0...HEAD
 [0.1.0]: https://github.com/simiriva95/portpilot/releases/tag/v0.1.0

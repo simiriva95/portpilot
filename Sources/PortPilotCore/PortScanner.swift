@@ -76,7 +76,7 @@ public enum PortScanner {
             // proto recv-q send-q local foreign state rxbytes txbytes rhiwat shiwat process:pid …
             guard cols.count > 10, cols[0].hasPrefix("tcp"), cols[5] == "LISTEN",
                   let dot = cols[3].lastIndex(of: "."), let port = Int(cols[3][cols[3].index(after: dot)...]),
-                  // The process name may contain spaces: "MSP Anywhere Dae:602".
+                  // The process name may contain spaces: "Remote Agent Dae:602".
                   let end = cols[10...].firstIndex(where: { $0.contains(":") && Int($0.split(separator: ":").last ?? "") != nil }),
                   let colon = cols[end].lastIndex(of: ":"), let pid = pid_t(cols[end][cols[end].index(after: colon)...]), pid > 0
             else { continue }
