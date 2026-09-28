@@ -5,9 +5,14 @@ let package = Package(
     name: "PortPilot",
     platforms: [.macOS(.v13)],
     targets: [
+        .target(name: "PortPilotCore"),
         .executableTarget(
             name: "PortPilot",
-            path: "Sources/PortPilot"
+            dependencies: ["PortPilotCore"]
+        ),
+        .testTarget(
+            name: "PortPilotTests",
+            dependencies: ["PortPilotCore"]
         )
     ]
 )

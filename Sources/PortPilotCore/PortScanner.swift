@@ -2,8 +2,8 @@ import Foundation
 
 /// Reads listening sockets with `lsof` and enriches each process with its
 /// executable path, arguments and a friendly name.
-enum PortScanner {
-    static func scan(includeUDP: Bool) async -> [PortProcess] {
+public enum PortScanner {
+    public static func scan(includeUDP: Bool) async -> [PortProcess] {
         await Task.detached(priority: .utility) { PortScanner.scanSync(includeUDP: includeUDP) }.value
     }
 
@@ -14,6 +14,26 @@ enum PortScanner {
         args.append("-FpcLPn")
         guard let output = Shell.run("/usr/sbin/lsof", args) else { return [] }
 
+        let me = NSUserName()
+        return parse(output: output)
+            .map { raw -> PortProcess in
+                var p = raw
+                if let info = ProcInfo.arguments(of: p.pid) {
+                    p.executablePath = info.path
+                    p.arguments = info.args
+                }
+                p.isCurrentUser = p.user == me
+                DevDetector.classify(&p)
+                return p
+            }
+            .sorted { lhs, rhs in
+                if lhs.kind != rhs.kind { return rank(lhs.kind) < rank(rhs.kind) }
+                return (lhs.ports.first?.port ?? 0) < (rhs.ports.first?.port ?? 0)
+            }
+    }
+
+    /// Groups `lsof -F` output by process, in lsof order, with ports sorted and IPv4/IPv6 duplicates merged.
+    static func parse(output: String) -> [PortProcess] {
         var byPid: [pid_t: PortProcess] = [:]
         var order: [pid_t] = []
         var pid: pid_t = 0
@@ -47,23 +67,11 @@ enum PortScanner {
             }
         }
 
-        let me = NSUserName()
-        return order.compactMap { byPid[$0] }
-            .map { raw -> PortProcess in
-                var p = raw
-                p.ports.sort { $0.port < $1.port }
-                if let info = ProcInfo.arguments(of: p.pid) {
-                    p.executablePath = info.path
-                    p.arguments = info.args
-                }
-                p.isCurrentUser = p.user == me
-                DevDetector.classify(&p)
-                return p
-            }
-            .sorted { lhs, rhs in
-                if lhs.kind != rhs.kind { return rank(lhs.kind) < rank(rhs.kind) }
-                return (lhs.ports.first?.port ?? 0) < (rhs.ports.first?.port ?? 0)
-            }
+        return order.compactMap { byPid[$0] }.map { p in
+            var p = p
+            p.ports.sort { $0.port < $1.port }
+            return p
+        }
     }
 
     private static func rank(_ kind: PortProcess.Kind) -> Int {

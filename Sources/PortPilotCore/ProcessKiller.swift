@@ -1,7 +1,7 @@
 import Foundation
 
-enum ProcessKiller {
-    enum Outcome: Equatable {
+public enum ProcessKiller {
+    public enum Outcome: Equatable {
         case terminated
         case stillRunning
         case notPermitted
@@ -10,7 +10,7 @@ enum ProcessKiller {
     }
 
     /// Sends SIGTERM (or SIGKILL when forced) and waits up to `timeout` seconds for the process to exit.
-    static func terminate(_ pid: pid_t, force: Bool, timeout: TimeInterval = 2) async -> Outcome {
+    public static func terminate(_ pid: pid_t, force: Bool, timeout: TimeInterval = 2) async -> Outcome {
         guard pid > 1, pid != getpid() else { return .notPermitted }
 
         if kill(pid, force ? SIGKILL : SIGTERM) != 0 {
