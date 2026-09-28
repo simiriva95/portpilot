@@ -126,7 +126,7 @@ struct SettingsView: View {
     }
 }
 
-/// Mascot preview; only the selected one animates, so twelve GIFs don't play at once.
+/// Mascot preview; only the selected one animates, so a dozen GIFs don't play at once.
 private struct MascotCard: View {
     let mascot: Mascot
     let selected: Bool

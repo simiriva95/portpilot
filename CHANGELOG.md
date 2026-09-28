@@ -9,7 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - Quick quit shortcuts: `⌘⌫` quits the selected row, `⌥⌘⌫` force quits it, `⇧⌘⌫` quits all dev servers; `Return` confirms and `Esc` cancels, with a shortcut hint bar under the list.
 - Themes (System, Synthwave, Terminal, Pastel, Sunset, Ocean) and a custom accent color.
-- Pixel-art mascots (cat, penguin, fox, frog, bunny, panda, duck, owl, axolotl, capybara) or a custom GIF: idle in the header, asleep in the empty state, cheering after a quit, hopping in the menu bar when the dev server count changes.
+- Pixel-art mascots (cat, penguin, fox, frog, bunny, panda, duck, owl, axolotl, capybara, dino, hedgehog, octopus) or a custom GIF: idle in the header, asleep in the empty state, cheering after a quit, hopping in the menu bar when the dev server count changes.
 
 ## [0.1.0] - 2026-09-28
 

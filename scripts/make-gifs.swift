@@ -7,7 +7,7 @@ import ImageIO
 import UniformTypeIdentifiers
 
 // MARK: Sprites (16×16). . transparent  o outline  b body  s shade  l light  e eye  w eye shine  p cheek  a accent
-//   d/g/y: extra per-animal colors (panda patches, axolotl gills, capybara's yuzu)
+//   d/g/y: extra per-animal colors (panda patches, hedgehog spines, axolotl gills, capybara's yuzu, dino crest)
 
 struct Animal {
     let name: String
@@ -208,6 +208,63 @@ let animals: [Animal] = [
         "..oooo.oo.oooo..",
     ], palette: ["o": 0x3E2A18, "b": 0xB07A45, "s": 0x8E5E33, "e": 0x1E140C,
                  "w": 0xFFFFFF, "a": 0x2A1A0E, "y": 0xFF9F1C], lid: "b"),
+    Animal(name: "dino", rows: [
+        ".......oo.......",
+        "......oyyo......",
+        "....ooyyyyoo....",
+        "...obbbbbbbbo...",
+        "..obbbbbbbbbbo..",
+        "..obwebbbbwebo..",
+        "..obeebbbbeebo..",
+        "..obpbbbbbbpbo..",
+        "..obbbollobbbo..",
+        "...obbbbbbbbo...",
+        "..obbllllllbbo..",
+        ".oobllllllllboo.",
+        "..obllllllllbo..",
+        "..obbllllllbbo..",
+        "..obbbbbbbbbbo..",
+        "...ooo....ooo...",
+    ], palette: ["o": 0x1F4D2B, "b": 0x6CCB7A, "l": 0xE8F7C8, "e": 0x14301B,
+                 "w": 0xFFFFFF, "p": 0xFF9EB5, "y": 0xFF8A3D], lid: "b"),
+    Animal(name: "hedgehog", rows: [
+        "................",
+        "..o.o.o..o.o.o..",
+        "..odododdododo..",
+        ".oddddddddddddo.",
+        "oddddddddddddddo",
+        "oddllllllllllddo",
+        "oddlwellllwelddo",
+        "oddleelllleelddo",
+        "oddplllaalllpddo",
+        ".oddllllllllddo.",
+        ".oddddllllddddo.",
+        "oddddddddddddddo",
+        "oddddddddddddddo",
+        ".oddddddddddddo.",
+        "..oddddddddddo..",
+        "...pp......pp...",
+    ], palette: ["o": 0x3A2616, "d": 0x7A5436, "l": 0xF1DDBF, "e": 0x1E130B,
+                 "w": 0xFFFFFF, "p": 0xFFB0A0, "a": 0x2A1A10], lid: "l"),
+    Animal(name: "octopus", rows: [
+        "................",
+        ".....oooooo.....",
+        "....obbbbbbo....",
+        "...obbbbbbbbo...",
+        "..obbbsbbsbbbo..",
+        "..obbbbbbbbbbo..",
+        "..obwebbbbwebo..",
+        "..obeebbbbeebo..",
+        "..obpbbaabbpbo..",
+        "..obbbbbbbbbbo..",
+        ".obbbbbbbbbbbbo.",
+        "obbobbobbobbobbo",
+        "obbobbobbobbobbo",
+        "obo.obo..obo.obo",
+        ".o...o....o...o.",
+        "................",
+    ], palette: ["o": 0x4B1F66, "b": 0xB679E8, "s": 0x9557CF, "e": 0x22102E,
+                 "w": 0xFFFFFF, "p": 0xFF9EC8, "a": 0x4B1F66], lid: "b"),
 ]
 
 // MARK: Frames

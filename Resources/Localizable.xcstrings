@@ -421,6 +421,16 @@
         }
       }
     },
+    "Dino": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dino"
+          }
+        }
+      }
+    },
     "Duck": {
       "localizations": {
         "it": {
@@ -477,6 +487,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Rana"
+          }
+        }
+      }
+    },
+    "Hedgehog": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Riccio"
           }
         }
       }
@@ -577,6 +597,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Oceano"
+          }
+        }
+      }
+    },
+    "Octopus": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Polpo"
           }
         }
       }
