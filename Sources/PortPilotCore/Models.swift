@@ -53,8 +53,12 @@ public struct PortProcess: Identifiable, Hashable {
         arguments.isEmpty ? (executablePath ?? command) : arguments.joined(separator: " ")
     }
 
+    /// Outermost bundle ("Visual Studio Code.app", not its "Code Helper.app"), except for
+    /// toolchains inside Xcode, whose Python lives in Xcode.app/Contents/Developer/…/Python.app.
     public var appBundlePath: String? {
-        guard let path = executablePath, let range = path.range(of: ".app/") else { return nil }
+        guard let path = executablePath else { return nil }
+        let options: String.CompareOptions = path.contains(".app/Contents/Developer/") ? .backwards : []
+        guard let range = path.range(of: ".app/", options: options) else { return nil }
         return String(path[..<range.lowerBound]) + ".app"
     }
 }

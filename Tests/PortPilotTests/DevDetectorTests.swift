@@ -84,3 +84,23 @@ final class DevDetectorTests: XCTestCase {
         XCTAssertEqual(unknown.displayName, "mystery")
     }
 }
+
+final class BundleNameTests: XCTestCase {
+    func testXcodePythonIsPythonNotXcode() {
+        var p = PortProcess(pid: 1, command: "Python", user: NSUserName())
+        p.executablePath = "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python"
+        p.arguments = ["Python", "-m", "http.server", "8765"]
+        DevDetector.classify(&p)
+        XCTAssertEqual(p.appBundlePath?.hasSuffix("/Python.app"), true)
+        XCTAssertEqual(p.displayName, "Python http.server")
+        XCTAssertEqual(p.kind, .dev)
+    }
+
+    func testHelperAppUsesOuterBundle() {
+        var p = PortProcess(pid: 1, command: "Code Helper", user: NSUserName())
+        p.executablePath = "/Applications/Visual Studio Code.app/Contents/Frameworks/Code Helper (Plugin).app/Contents/MacOS/Code Helper (Plugin)"
+        DevDetector.classify(&p)
+        XCTAssertEqual(p.displayName, "Visual Studio Code")
+        XCTAssertEqual(p.kind, .app)
+    }
+}
