@@ -7,6 +7,7 @@ struct PortsPanel: View {
     @State private var query = ""
     @State private var filter: Filter = .all
     @State private var confirmingKillAll = false
+    @State private var listHeight: CGFloat = 0
 
     enum Filter: String, CaseIterable, Identifiable {
         case all = "All", dev = "Development", other = "System"
@@ -88,7 +89,7 @@ struct PortsPanel: View {
             }
             .padding(.horizontal, 12)
             .frame(height: 30)
-            .background(Capsule(style: .continuous).fill(Color(nsColor: .quaternaryLabelColor).opacity(0.5)))
+            .background(Capsule(style: .continuous).fill(Color(nsColor: .quaternaryLabelColor)))
 
             Picker("Filter", selection: $filter) {
                 ForEach(Filter.allCases) { Text($0.rawValue).tag($0) }
@@ -115,15 +116,22 @@ struct PortsPanel: View {
             .frame(height: 200)
             .padding(.horizontal, 24)
         } else {
+            let clashing = store.clashingPorts
             ScrollView {
-                LazyVStack(spacing: 2) {
+                VStack(spacing: 2) {
                     ForEach(filtered) { process in
-                        ProcessRow(process: process, clashing: store.clashingPorts)
+                        ProcessRow(process: process, clashing: clashing)
                     }
                 }
                 .padding(6)
+                .background(GeometryReader { geo in
+                    Color.clear
+                        .onAppear { listHeight = geo.size.height }
+                        .onChange(of: geo.size.height) { listHeight = $0 }
+                })
             }
-            .frame(height: min(CGFloat(filtered.count) * 78 + 12, 480))
+            // Grows with its rows (and inline confirmations) up to 480 pt, then scrolls.
+            .frame(height: min(max(listHeight, 80), 480))
         }
     }
 
@@ -141,6 +149,7 @@ struct PortsPanel: View {
                     .buttonStyle(.bordered)
                     .tint(.red)
                 }
+                .capsuleButtons()
                 .controlSize(.small)
                 .padding(.horizontal, 10)
                 .padding(.vertical, 6)

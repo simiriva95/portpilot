@@ -37,11 +37,11 @@ final class PortStore: ObservableObject {
     var devProcessCount: Int { processes.filter { $0.kind == .dev }.count }
     var portCount: Int { processes.reduce(0) { $0 + $1.ports.count } }
 
-    /// Port numbers bound by more than one process (e.g. AirPlay Receiver and a .NET API both on 5000).
-    var clashingPorts: Set<Int> {
-        var owners: [Int: Set<pid_t>] = [:]
+    /// Ports bound by more than one process (e.g. AirPlay Receiver and a .NET API both on TCP 5000).
+    var clashingPorts: Set<ListeningPort.ID> {
+        var owners: [ListeningPort.ID: Set<pid_t>] = [:]
         for p in processes {
-            for port in p.ports { owners[port.port, default: []].insert(p.pid) }
+            for port in p.ports { owners[port.id, default: []].insert(p.pid) }
         }
         return Set(owners.filter { $0.value.count > 1 }.keys)
     }

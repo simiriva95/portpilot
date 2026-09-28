@@ -45,7 +45,7 @@ enum Brand {
     // System colors only, so tiles follow the user's appearance and accessibility settings.
     private static let known: [String: (String, Color)] = [
         "Vite": ("V", Color(nsColor: .systemIndigo)),
-        "Next.js": ("N", Color(nsColor: .darkGray)),
+        "Next.js": ("N", Color(nsColor: .systemGray)),
         "Nuxt": ("Nu", Color(nsColor: .systemGreen)),
         "Astro": ("A", Color(nsColor: .systemPurple)),
         "Storybook": ("S", Color(nsColor: .systemPink)),
@@ -69,9 +69,9 @@ enum Brand {
     static func tint(for p: PortProcess) -> Color {
         if let hit = known[p.displayName] ?? known[p.executableName] { return hit.1 }
         if p.kind != .dev { return Color(nsColor: .systemGray) }
-        let palette: [Color] = [.blue, .indigo, .purple, .pink, .orange, .brown, .teal]
+        let palette: [NSColor] = [.systemBlue, .systemIndigo, .systemPurple, .systemPink, .systemOrange, .systemBrown, .systemTeal]
         let hash = p.displayName.unicodeScalars.reduce(0) { ($0 &* 31 &+ Int($1.value)) & 0xFFFF }
-        return palette[hash % palette.count]
+        return Color(nsColor: palette[hash % palette.count])
     }
 
     static func glyph(for p: PortProcess) -> String {
@@ -118,6 +118,13 @@ struct FlowLayout: Layout {
     }
 }
 
+extension View {
+    /// Capsule-shaped bordered buttons on macOS 14+; macOS 13 keeps the default rounded rectangle.
+    @ViewBuilder func capsuleButtons() -> some View {
+        if #available(macOS 14, *) { buttonBorderShape(.capsule) } else { self }
+    }
+}
+
 // MARK: - Native-looking menu rows in the footer
 
 struct MenuItemLabel: View {
@@ -129,10 +136,10 @@ struct MenuItemLabel: View {
         HStack {
             Text(title)
             Spacer()
-            if let trailing { Text(trailing).opacity(0.6).monospacedDigit() }
+            if let trailing { Text(trailing).foregroundStyle(.secondary).monospacedDigit() }
         }
         .font(.system(size: 13))
-        .foregroundStyle(destructive ? Color.red : Color.primary)
+        .foregroundStyle(destructive ? Color(nsColor: .systemRed) : Color.primary)
     }
 }
 
@@ -154,7 +161,7 @@ struct MenuItemButtonStyle: ButtonStyle {
                 .contentShape(Rectangle())
                 .background(
                     RoundedRectangle(cornerRadius: 8, style: .continuous)
-                        .fill(Color.primary.opacity(hovering && isEnabled ? (configuration.isPressed ? 0.14 : 0.08) : 0))
+                        .fill(hovering && isEnabled ? Color(nsColor: configuration.isPressed ? .tertiaryLabelColor : .quaternaryLabelColor) : .clear)
                 )
                 .opacity(isEnabled ? 1 : 0.4)
                 .onHover { hovering = $0 }

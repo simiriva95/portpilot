@@ -1,7 +1,7 @@
 import Foundation
 
-public struct ListeningPort: Identifiable, Hashable {
-    public enum Proto: String { case tcp = "TCP", udp = "UDP" }
+public struct ListeningPort: Identifiable, Hashable, Sendable {
+    public enum Proto: String, Sendable { case tcp = "TCP", udp = "UDP" }
 
     public let port: Int
     public let proto: Proto
@@ -22,8 +22,8 @@ public struct ListeningPort: Identifiable, Hashable {
     public var url: URL? { URL(string: "http://localhost:\(port)") }
 }
 
-public struct PortProcess: Identifiable, Hashable {
-    public enum Kind: Hashable { case dev, app, system }
+public struct PortProcess: Identifiable, Hashable, Sendable {
+    public enum Kind: Hashable, Sendable { case dev, app, system }
 
     public let pid: pid_t
     public let command: String

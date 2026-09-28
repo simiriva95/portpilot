@@ -6,7 +6,7 @@ struct ProcessRow: View {
     @EnvironmentObject private var store: PortStore
     @AppStorage(Prefs.confirmBeforeKill) private var confirmBeforeKill = true
     let process: PortProcess
-    let clashing: Set<Int>
+    let clashing: Set<ListeningPort.ID>
 
     @State private var hovering = false
     @State private var confirming = false
@@ -44,21 +44,21 @@ struct ProcessRow: View {
 
                 FlowLayout(spacing: 6) {
                     ForEach(process.ports) { port in
-                        PortChip(port: port, isClashing: clashing.contains(port.port))
+                        PortChip(port: port, isClashing: clashing.contains(port.id))
                     }
                 }
 
                 if let message = store.messages[process.pid] {
                     Text(message)
                         .font(.system(size: 11))
-                        .foregroundStyle(.orange)
+                        .foregroundStyle(Color(nsColor: .systemOrange))
                 }
             }
         }
         .padding(8)
         .background(
             RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .fill(Color.primary.opacity(hovering || confirming ? 0.06 : 0))
+                .fill(hovering || confirming ? Color(nsColor: .quaternaryLabelColor) : .clear)
         )
         .onHover { hovering = $0 }
         .animation(.easeOut(duration: 0.15), value: confirming)
@@ -77,6 +77,8 @@ struct ProcessRow: View {
                 .help("Owned by \(process.user). Needs administrator access.")
         } else if isStubborn {
             Button("Force Quit") { Task { await store.terminate(process, force: true) } }
+                .buttonStyle(.bordered)
+                .capsuleButtons()
                 .controlSize(.small)
                 .tint(.red)
         } else {
@@ -102,6 +104,7 @@ struct ProcessRow: View {
                 .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 4)
             Button("Cancel") { confirming = false }
+                .buttonStyle(.bordered)
             Button(confirmingForce ? "Force Quit" : "Quit") {
                 confirming = false
                 Task { await store.terminate(process, force: confirmingForce) }
@@ -109,6 +112,7 @@ struct ProcessRow: View {
             .buttonStyle(.bordered)
             .tint(.red)
         }
+        .capsuleButtons()
         .controlSize(.small)
         .padding(.leading, 10)
         .padding(.trailing, 6)
@@ -119,7 +123,7 @@ struct ProcessRow: View {
         )
         .overlay(
             RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .strokeBorder(Color.primary.opacity(0.12), lineWidth: 0.5)
+                .strokeBorder(Color(nsColor: .separatorColor), lineWidth: 0.5)
         )
     }
 
@@ -182,7 +186,7 @@ struct PortChip: View {
             )
             .overlay(
                 Capsule(style: .continuous)
-                    .strokeBorder(isClashing ? Color.orange : Color.primary.opacity(0.14), lineWidth: isClashing ? 1 : 0.5)
+                    .strokeBorder(isClashing ? Color(nsColor: .systemOrange) : Color(nsColor: .separatorColor), lineWidth: isClashing ? 1.5 : 0.5)
             )
         }
         .buttonStyle(.plain)
