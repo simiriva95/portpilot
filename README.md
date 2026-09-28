@@ -2,8 +2,9 @@
 
 A tiny native macOS menu bar app that shows every listening port, grouped by process — and lets you quit the dev server hogging `:3000` in one click.
 
-<!-- TODO: replace with a real screenshot of the panel (light and dark) before announcing the release. -->
-![PortPilot menu bar panel](docs/screenshot.png)
+<p align="center">
+  <img src="docs/screenshot.png" width="360" alt="PortPilot panel listing Next.js, a .NET API, Vite, postgres, Storybook and Redis with their ports; port 5000 is outlined in orange because two processes use it">
+</p>
 
 - **Grouped by process**: `Vite — frontend-admin`, `Next.js`, `service-scope (.NET)`, `postgres`, `Docker`… with the port numbers front and center.
 - **Knows your stack**: detects Vite, Next.js, Nuxt, Astro, Storybook, Angular, NestJS, Django, Rails, Laravel, .NET, Docker and more, and shows the project folder the server was started from.
@@ -14,6 +15,10 @@ A tiny native macOS menu bar app that shows every listening port, grouped by pro
 - **Themes and mascots**: System, Synthwave, Terminal, Pastel, Sunset and Ocean, plus your own accent color. A pixel-art cat, penguin, fox, frog, bunny, panda, duck, owl, axolotl, capybara, dino, hedgehog or octopus (or your own GIF) naps when nothing is running, cheers when a server quits and hops in the menu bar when servers start or stop.
 - **Accessible**: VoiceOver labels on every row and button, text in system colors (Dark Mode and Increase Contrast just work; themes drop their tint with Increase Contrast), animations pause with Reduce Motion.
 - English and Italian. Native SwiftUI, no dependencies, ~1 MB. macOS 13 Ventura or later.
+
+<p align="center">
+  <img src="docs/themes.png" width="720" alt="The panel in the Synthwave, Terminal and Pastel themes, with the fox, frog and capybara mascots">
+</p>
 
 ## Install
 
@@ -93,6 +98,7 @@ Issues and pull requests are welcome.
 - UI strings go in `Resources/Localizable.xcstrings` (English and Italian). New languages are welcome.
 - The app icon is generated from `Resources/AppIcon.svg` with `./scripts/make-icon.sh`, the mascot GIFs from the ASCII sprites in `scripts/make-gifs.swift` (`swift scripts/make-gifs.swift preview.png` also writes a contact sheet). New animals welcome.
 - Theme text stays in semantic colors; a theme only sets the accent, the background wash and the icon palette.
+- For screenshots, run with fake processes: `open dist/PortPilot.app --args -demo YES -theme synthwave -mascot fox`. In demo mode quitting only removes the row, nothing is signalled.
 - Run `swift build` and `swift test` before opening a PR, and use [Conventional Commits](https://www.conventionalcommits.org) (`feat:`, `fix:`, `docs:`…).
 
 ## Releasing

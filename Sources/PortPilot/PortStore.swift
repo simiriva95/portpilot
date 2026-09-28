@@ -12,6 +12,8 @@ enum Prefs {
     static let mascot = "mascot"
     static let celebrate = "celebrate"
     static let animateMenuBar = "animateMenuBar"
+    /// `PortPilot -demo YES`: fake processes for screenshots; quitting never signals anything.
+    static let demo = "demo"
 
     static func register() {
         UserDefaults.standard.register(defaults: [
@@ -83,7 +85,12 @@ final class PortStore: ObservableObject {
         isRefreshing = true
         defer { isRefreshing = false }
 
-        let result = await PortScanner.scan(includeUDP: UserDefaults.standard.bool(forKey: Prefs.includeUDP))
+        let result: [PortProcess]
+        if UserDefaults.standard.bool(forKey: Prefs.demo) {
+            result = hasScanned ? processes : PortScanner.demo()  // demo quits stick until relaunch
+        } else {
+            result = await PortScanner.scan(includeUDP: UserDefaults.standard.bool(forKey: Prefs.includeUDP))
+        }
         let before = devProcessCount
         if result != processes { processes = result }  // no re-render when nothing changed
         if hasScanned && devProcessCount != before { hopMenuBar() }
@@ -111,6 +118,13 @@ final class PortStore: ObservableObject {
     }
 
     func terminate(_ process: PortProcess, force: Bool = false) async {
+        // Demo PIDs are made up and may belong to real processes: never send a signal.
+        if UserDefaults.standard.bool(forKey: Prefs.demo) {
+            processes.removeAll { $0.pid == process.pid }
+            if UserDefaults.standard.bool(forKey: Prefs.celebrate) { celebrations += 1 }
+            hopMenuBar()
+            return
+        }
         busy.insert(process.pid)
         let outcome = await ProcessKiller.terminate(process.pid, force: force)
         busy.remove(process.pid)
