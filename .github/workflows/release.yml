@@ -14,6 +14,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Test
+        run: swift test
+
       - name: Import Developer ID certificate
         if: env.HAS_SIGNING == 'true'
         env:
@@ -42,9 +45,14 @@ jobs:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           APPLE_APP_PASSWORD: ${{ secrets.APPLE_APP_PASSWORD }}
         run: |
-          DMG="dist/PortPilot-${GITHUB_REF_NAME#v}.dmg"
+          VERSION="${GITHUB_REF_NAME#v}"
+          DMG="dist/PortPilot-$VERSION.dmg"
           xcrun notarytool submit "$DMG" --apple-id "$APPLE_ID" --team-id "$APPLE_TEAM_ID" --password "$APPLE_APP_PASSWORD" --wait
           xcrun stapler staple "$DMG"
+          # The ticket covers the app inside the DMG too: staple it and rebuild the zip so it works offline.
+          xcrun stapler staple dist/PortPilot.app
+          rm "dist/PortPilot-$VERSION.zip"
+          ditto -c -k --keepParent dist/PortPilot.app "dist/PortPilot-$VERSION.zip"
 
       - name: Publish GitHub release
         uses: softprops/action-gh-release@v2
