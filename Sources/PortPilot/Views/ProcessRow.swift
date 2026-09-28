@@ -10,6 +10,7 @@ struct ProcessRow: View {
 
     @State private var hovering = false
     @State private var confirming = false
+    @State private var confirmingForce = false
 
     private var isBusy: Bool { store.busy.contains(process.pid) }
     private var isStubborn: Bool { store.stubborn.contains(process.pid) }
@@ -80,11 +81,7 @@ struct ProcessRow: View {
                 .tint(.red)
         } else {
             Button {
-                if confirmBeforeKill || process.kind != .dev {
-                    confirming = true
-                } else {
-                    Task { await store.terminate(process) }
-                }
+                requestQuit()
             } label: {
                 Image(systemName: "xmark.circle")
                     .font(.system(size: 15))
@@ -105,9 +102,9 @@ struct ProcessRow: View {
                 .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 4)
             Button("Cancel") { confirming = false }
-            Button("Quit") {
+            Button(confirmingForce ? "Force Quit" : "Quit") {
                 confirming = false
-                Task { await store.terminate(process) }
+                Task { await store.terminate(process, force: confirmingForce) }
             }
             .buttonStyle(.bordered)
             .tint(.red)
@@ -135,8 +132,18 @@ struct ProcessRow: View {
         }
         if process.isCurrentUser {
             Divider()
-            Button("Quit") { Task { await store.terminate(process) } }
-            Button("Force Quit") { Task { await store.terminate(process, force: true) } }
+            Button("Quit") { requestQuit() }
+            Button("Force Quit") { requestQuit(force: true) }
+        }
+    }
+
+    /// System and app processes always ask first; dev servers only if the setting says so.
+    private func requestQuit(force: Bool = false) {
+        if confirmBeforeKill || process.kind != .dev {
+            confirmingForce = force
+            confirming = true
+        } else {
+            Task { await store.terminate(process, force: force) }
         }
     }
 }
