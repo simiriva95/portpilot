@@ -5,6 +5,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-09-29
+
+### Changed
+
+- Releases now update the Homebrew cask automatically. No changes to the app itself.
+
 ## [0.1.2] - 2026-09-29
 
 ### Added
@@ -38,7 +44,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Themes (System, Synthwave, Terminal, Pastel, Sunset, Ocean) and a custom accent color.
 - Pixel-art mascots (cat, penguin, fox, frog, bunny, panda, duck, owl, axolotl, capybara, dino, hedgehog, octopus) or a custom GIF: idle in the header, asleep in the empty state, cheering after a quit, hopping in the menu bar when the dev server count changes.
 
-[Unreleased]: https://github.com/simiriva95/portpilot/compare/v0.1.2...HEAD
+[Unreleased]: https://github.com/simiriva95/portpilot/compare/v0.1.3...HEAD
+[0.1.3]: https://github.com/simiriva95/portpilot/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/simiriva95/portpilot/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/simiriva95/portpilot/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/simiriva95/portpilot/releases/tag/v0.1.0
