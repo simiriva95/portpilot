@@ -54,6 +54,16 @@ jobs:
           rm "dist/PortPilot-$VERSION.zip"
           ditto -c -k --keepParent dist/PortPilot.app "dist/PortPilot-$VERSION.zip"
 
+      - name: Release notes from CHANGELOG
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          awk -v head="## [$VERSION]" 'index($0, head) == 1 { on = 1; next } /^## \[/ || /^\[[^]]+\]: / { on = 0 } on' CHANGELOG.md > dist/RELEASE_NOTES.md
+          # Fail rather than publish a release without notes.
+          grep -q '[^[:space:]]' dist/RELEASE_NOTES.md || { echo "No CHANGELOG section for $VERSION"; exit 1; }
+          if [ "$HAS_SIGNING" != "true" ]; then
+            printf '\n---\n\nThis build is not signed with an Apple Developer ID. See [Sign it yourself](https://github.com/%s#sign-it-yourself) or `Install.txt` in the DMG.\n' "$GITHUB_REPOSITORY" >> dist/RELEASE_NOTES.md
+          fi
+
       - name: Checksums
         run: cd dist && shasum -a 256 *.dmg *.zip > SHA256SUMS.txt && cat SHA256SUMS.txt
 
@@ -64,4 +74,4 @@ jobs:
             dist/*.dmg
             dist/*.zip
             dist/SHA256SUMS.txt
-          generate_release_notes: true
+          body_path: dist/RELEASE_NOTES.md

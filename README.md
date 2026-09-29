@@ -103,7 +103,7 @@ Issues and pull requests are welcome.
 
 ## Releasing
 
-Update `CHANGELOG.md`, then push a tag like `v0.1.0`. The Release workflow runs the tests, builds a universal binary and attaches the `.dmg` and `.zip` to a GitHub release.
+Add a `## [x.y.z]` section to `CHANGELOG.md`, then push a tag like `v0.1.2`. The Release workflow runs the tests, builds a universal binary, attaches the `.dmg`, `.zip` and `SHA256SUMS.txt` to a GitHub release and uses that CHANGELOG section as the release notes (it fails if the section is missing).
 To sign and notarize, add these repository secrets: `MACOS_CERT_P12` (base64 Developer ID Application certificate), `MACOS_CERT_PASSWORD`, `APPLE_ID`, `APPLE_TEAM_ID`, `APPLE_APP_PASSWORD` (app-specific password).
 
 ## License
