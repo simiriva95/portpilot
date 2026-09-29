@@ -22,13 +22,54 @@ A tiny native macOS menu bar app that shows every listening port, grouped by pro
 
 ## Install
 
+**With Homebrew** (recommended, no security prompts):
+
+```sh
+brew install --cask simiriva95/tap/portpilot
+```
+
+Or [download the DMG](#download-the-dmg) and sign it yourself. Either way you need macOS 13 Ventura or later, on Apple silicon or Intel.
+
+### Homebrew
+
+1. **No Homebrew yet?** Install it from [brew.sh](https://brew.sh) with the command shown there, then open a new Terminal window:
+
+   ```sh
+   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+   ```
+
+2. **Install PortPilot** from its tap (`simiriva95/tap` is added automatically the first time):
+
+   ```sh
+   brew install --cask simiriva95/tap/portpilot
+   ```
+
+3. **Open it** from Applications or Spotlight, or with `open -a PortPilot`. The icon appears in the menu bar; there's no Dock icon.
+
+PortPilot isn't signed with an Apple Developer ID, so right after installing the cask removes the quarantine flag and signs the app locally, the same steps as [Sign it yourself](#sign-it-yourself). macOS opens it without warnings.
+
+| To… | Run |
+| --- | --- |
+| Update | Nothing: PortPilot updates itself (see [Updates](#updates)). To go through Homebrew anyway: `brew upgrade --cask --greedy portpilot` |
+| Reinstall | `brew reinstall --cask portpilot` |
+| Uninstall | `brew uninstall --cask portpilot` |
+| Uninstall and delete settings and custom mascot | `brew uninstall --cask --zap portpilot` |
+
+**If something goes wrong:**
+
+- *"It seems there is already an App at '/Applications/PortPilot.app'"*: you installed the DMG before. Let Homebrew take it over with `brew install --cask --force simiriva95/tap/portpilot`; your settings are kept.
+- *Homebrew asks you to trust the tap*: run `brew trust --tap simiriva95/tap`, then install again.
+- *"Cask 'portpilot' is unavailable"* or an old version is installed: run `brew update`, then install again.
+
+### Download the DMG
+
 1. Download `PortPilot-<version>.dmg` from [Releases](https://github.com/simiriva95/portpilot/releases).
 2. Open it and drag **PortPilot** to **Applications**.
-3. Sign it on your Mac (once per download, see below), then open it. The icon appears in the menu bar.
+3. Sign it on your Mac (once, see below), then open it. The icon appears in the menu bar.
 
 ### Sign it yourself
 
-PortPilot is free and open source, and it isn't signed with an Apple Developer ID. The first time you open it, macOS stops it with *"PortPilot is damaged and can't be opened"* or *"Apple could not verify PortPilot is free of malware"*. That message is about the missing Apple signature, not about the app.
+PortPilot is free and open source, and it isn't signed with an Apple Developer ID. The first time you open a downloaded copy, macOS stops it with *"PortPilot is damaged and can't be opened"* or *"Apple could not verify PortPilot is free of malware"*. That message is about the missing Apple signature, not about the app.
 
 Fix it once in Terminal:
 
@@ -48,8 +89,6 @@ Step 3 should print `valid on disk` and `satisfies its Designated Requirement`. 
 
 **Without Terminal:** open PortPilot once so macOS blocks it, then go to **System Settings → Privacy & Security**, scroll down to the message about PortPilot and click **Open Anyway**. On macOS 15 Sequoia and later, right-click → Open no longer skips the check, so use this or the commands above.
 
-**Updates:** repeat the steps after installing a new version. If **Launch at login** stops working after an update, turn it off and on again in PortPilot's Settings.
-
 **Verify the download (optional):** each release lists SHA-256 checksums in `SHA256SUMS.txt`. Compare them before removing the quarantine flag:
 
 ```sh
@@ -58,19 +97,11 @@ shasum -a 256 ~/Downloads/PortPilot-*.dmg
 
 Prefer not to run a downloaded binary at all? [Build it from source](#build-from-source): it takes about a minute and needs no signing.
 
-### Homebrew
-
-```sh
-brew install --cask simiriva95/tap/portpilot
-```
-
-The cask removes the quarantine flag and signs the app locally after installing, so there's nothing else to do. If Homebrew asks you to trust the tap first, run `brew trust --tap simiriva95/tap`.
-
 ### Updates
 
-PortPilot checks GitHub Releases once a day and shows **PortPilot x.y.z is available** in the panel. **Update** downloads the new version, checks it against the release's `SHA256SUMS.txt`, makes sure it really is PortPilot at that version, removes the quarantine flag, signs it locally and relaunches. Nothing is installed without your click, and you can turn the daily check off or check manually in **Settings → Updates**.
+From 0.1.2 on, PortPilot checks GitHub Releases once a day and shows **PortPilot x.y.z is available** in the panel. **Update** downloads the new version, checks it against the release's `SHA256SUMS.txt`, makes sure it really is PortPilot at that version, removes the quarantine flag, signs it locally and relaunches, so there's no signing to redo. Nothing is installed without your click, and you can turn the daily check off or check manually in **Settings → Updates**.
 
-Homebrew installs update the same way (the cask is marked `auto_updates`, so `brew upgrade` leaves PortPilot alone).
+This works the same for Homebrew and DMG installs: the cask is marked `auto_updates`, so `brew upgrade` leaves PortPilot to its own updater. If **Launch at login** stops working after an update, turn it off and on again in PortPilot's Settings.
 
 ## Build from source
 

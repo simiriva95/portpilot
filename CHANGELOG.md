@@ -5,10 +5,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-09-29
+
 ### Added
 
 - In-app updates: a daily check of GitHub Releases, then one click to download, verify (SHA-256 against `SHA256SUMS.txt`, bundle id and version), sign locally and relaunch. Can be turned off in Settings → Updates.
 - Homebrew tap: `brew install --cask simiriva95/tap/portpilot`, bumped by the release workflow.
+- README install guide for Homebrew: setup, everyday commands and common errors.
 
 ## [0.1.1] - 2026-09-28
 
@@ -35,6 +38,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Themes (System, Synthwave, Terminal, Pastel, Sunset, Ocean) and a custom accent color.
 - Pixel-art mascots (cat, penguin, fox, frog, bunny, panda, duck, owl, axolotl, capybara, dino, hedgehog, octopus) or a custom GIF: idle in the header, asleep in the empty state, cheering after a quit, hopping in the menu bar when the dev server count changes.
 
-[Unreleased]: https://github.com/simiriva95/portpilot/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/simiriva95/portpilot/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/simiriva95/portpilot/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/simiriva95/portpilot/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/simiriva95/portpilot/releases/tag/v0.1.0
