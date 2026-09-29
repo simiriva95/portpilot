@@ -58,15 +58,19 @@ shasum -a 256 ~/Downloads/PortPilot-*.dmg
 
 Prefer not to run a downloaded binary at all? [Build it from source](#build-from-source): it takes about a minute and needs no signing.
 
-### Homebrew (coming soon)
-
-A Homebrew cask is planned. It will be:
+### Homebrew
 
 ```sh
-brew install --cask portpilot
+brew install --cask simiriva95/tap/portpilot
 ```
 
-Until then, use the `.dmg` above.
+The cask removes the quarantine flag and signs the app locally after installing, so there's nothing else to do. If Homebrew asks you to trust the tap first, run `brew trust --tap simiriva95/tap`.
+
+### Updates
+
+PortPilot checks GitHub Releases once a day and shows **PortPilot x.y.z is available** in the panel. **Update** downloads the new version, checks it against the release's `SHA256SUMS.txt`, makes sure it really is PortPilot at that version, removes the quarantine flag, signs it locally and relaunches. Nothing is installed without your click, and you can turn the daily check off or check manually in **Settings → Updates**.
+
+Homebrew installs update the same way (the cask is marked `auto_updates`, so `brew upgrade` leaves PortPilot alone).
 
 ## Build from source
 
@@ -104,6 +108,7 @@ Issues and pull requests are welcome.
 ## Releasing
 
 Add a `## [x.y.z]` section to `CHANGELOG.md`, then push a tag like `v0.1.2`. The Release workflow runs the tests, builds a universal binary, attaches the `.dmg`, `.zip` and `SHA256SUMS.txt` to a GitHub release and uses that CHANGELOG section as the release notes (it fails if the section is missing).
+To update the Homebrew cask automatically, add a `TAP_GITHUB_TOKEN` secret: a fine-grained token with *Contents: read and write* on `simiriva95/homebrew-tap`. Without it, bump `version` and `sha256` in `Casks/portpilot.rb` by hand.
 To sign and notarize, add these repository secrets: `MACOS_CERT_P12` (base64 Developer ID Application certificate), `MACOS_CERT_PASSWORD`, `APPLE_ID`, `APPLE_TEAM_ID`, `APPLE_APP_PASSWORD` (app-specific password).
 
 ## License

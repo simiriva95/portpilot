@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added
+
+- In-app updates: a daily check of GitHub Releases, then one click to download, verify (SHA-256 against `SHA256SUMS.txt`, bundle id and version), sign locally and relaunch. Can be turned off in Settings → Updates.
+- Homebrew tap: `brew install --cask simiriva95/tap/portpilot`, bumped by the release workflow.
+
 ## [0.1.1] - 2026-09-28
 
 ### Added

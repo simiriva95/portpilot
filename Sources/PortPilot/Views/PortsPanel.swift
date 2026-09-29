@@ -3,6 +3,7 @@ import SwiftUI
 
 struct PortsPanel: View {
     @EnvironmentObject private var store: PortStore
+    @EnvironmentObject private var updater: Updater
     @AppStorage(Prefs.showSystem) private var showSystem = true
     @AppStorage(Prefs.theme) private var themeID = Theme.system.id
     @AppStorage(Prefs.customAccent) private var customAccent = ""
@@ -188,8 +189,53 @@ struct PortsPanel: View {
         }
     }
 
+    /// Shown only when there's something to act on: an update, one in progress, or a failed install.
+    @ViewBuilder
+    private var updateBanner: some View {
+        switch updater.state {
+        case .available(let release):
+            HStack(spacing: 8) {
+                Image(systemName: "arrow.down.circle.fill").foregroundStyle(.tint).accessibilityHidden(true)
+                Text("PortPilot \(release.version) is available").font(.system(size: 12, weight: .medium))
+                Spacer(minLength: 4)
+                Button("What's New") { NSWorkspace.shared.open(release.page) }
+                    .buttonStyle(.borderless)
+                Button("Update") { Task { await updater.install(release) } }
+                    .buttonStyle(.borderedProminent)
+            }
+            .capsuleButtons()
+            .controlSize(.small)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+        case .installing(let release):
+            HStack(spacing: 8) {
+                ProgressView().controlSize(.small)
+                Text("Installing PortPilot \(release.version)…").font(.system(size: 12))
+                Spacer()
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+        case .failed(let message, let page?):
+            HStack(spacing: 8) {
+                Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(Color(nsColor: .systemOrange))
+                    .accessibilityHidden(true)
+                Text(message).font(.system(size: 11)).fixedSize(horizontal: false, vertical: true)
+                Spacer(minLength: 4)
+                Button("Download") { NSWorkspace.shared.open(page) }
+                    .buttonStyle(.bordered)
+            }
+            .capsuleButtons()
+            .controlSize(.small)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+        default:
+            EmptyView()
+        }
+    }
+
     private var footer: some View {
         VStack(spacing: 0) {
+            updateBanner
             if confirmingKillAll {
                 HStack {
                     Text("Quit \(store.devProcessCount) dev servers?").font(.system(size: 12))

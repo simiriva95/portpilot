@@ -14,6 +14,8 @@ enum Prefs {
     static let animateMenuBar = "animateMenuBar"
     /// `PortPilot -demo YES`: fake processes for screenshots; quitting never signals anything.
     static let demo = "demo"
+    static let checkForUpdates = "checkForUpdates"
+    static let lastUpdateCheck = "lastUpdateCheck"
 
     static func register() {
         UserDefaults.standard.register(defaults: [
@@ -25,7 +27,8 @@ enum Prefs {
             customAccent: "",
             mascot: Mascot.cat.rawValue,
             celebrate: true,
-            animateMenuBar: true
+            animateMenuBar: true,
+            checkForUpdates: true
         ])
     }
 }

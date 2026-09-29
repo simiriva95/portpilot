@@ -4,11 +4,13 @@ import SwiftUI
 @main
 struct PortPilotApp: App {
     @StateObject private var store = PortStore()
+    @StateObject private var updater = Updater()
 
     var body: some Scene {
         MenuBarExtra {
             PortsPanel()
                 .environmentObject(store)
+                .environmentObject(updater)
         } label: {
             MenuBarLabel(count: store.devProcessCount, frame: store.menuBarFrame)
         }
@@ -17,6 +19,7 @@ struct PortPilotApp: App {
         Settings {
             SettingsView()
                 .environmentObject(store)
+                .environmentObject(updater)
         }
     }
 }

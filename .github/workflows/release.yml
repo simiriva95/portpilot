@@ -11,6 +11,7 @@ jobs:
     runs-on: macos-14
     env:
       HAS_SIGNING: ${{ secrets.MACOS_CERT_P12 != '' }}
+      HAS_TAP_TOKEN: ${{ secrets.TAP_GITHUB_TOKEN != '' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -75,3 +76,19 @@ jobs:
             dist/*.zip
             dist/SHA256SUMS.txt
           body_path: dist/RELEASE_NOTES.md
+
+      # Needs a TAP_GITHUB_TOKEN secret with contents:write on simiriva95/homebrew-tap; skipped without it.
+      - name: Update Homebrew cask
+        if: env.HAS_TAP_TOKEN == 'true'
+        env:
+          TAP_TOKEN: ${{ secrets.TAP_GITHUB_TOKEN }}
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          SHA=$(shasum -a 256 "dist/PortPilot-$VERSION.dmg" | cut -d ' ' -f 1)
+          git clone --depth 1 "https://x-access-token:${TAP_TOKEN}@github.com/simiriva95/homebrew-tap.git" tap
+          cd tap
+          sed -i '' -e "s/^  version \".*\"/  version \"$VERSION\"/" -e "s/^  sha256 \".*\"/  sha256 \"$SHA\"/" Casks/portpilot.rb
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "portpilot $VERSION"
+          git push

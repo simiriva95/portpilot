@@ -1,6 +1,16 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "%@ failed while installing the update.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ non è riuscito durante l'installazione dell'aggiornamento."
+          }
+        }
+      }
+    },
     "%@ is not a dev server. Quit anyway?": {
       "localizations": {
         "it": {
@@ -281,6 +291,26 @@
         }
       }
     },
+    "Check Now": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Controlla ora"
+          }
+        }
+      }
+    },
+    "Check for updates automatically": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Controlla automaticamente gli aggiornamenti"
+          }
+        }
+      }
+    },
     "Choose GIF…": {
       "localizations": {
         "it": {
@@ -431,6 +461,16 @@
         }
       }
     },
+    "Download": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scarica"
+          }
+        }
+      }
+    },
     "Duck": {
       "localizations": {
         "it": {
@@ -491,6 +531,16 @@
         }
       }
     },
+    "GitHub didn't return the latest release.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GitHub non ha restituito l'ultima release."
+          }
+        }
+      }
+    },
     "Hedgehog": {
       "localizations": {
         "it": {
@@ -507,6 +557,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Includi porte UDP"
+          }
+        }
+      }
+    },
+    "Installing PortPilot %@…": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Installazione di PortPilot %@…"
           }
         }
       }
@@ -717,6 +777,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pinguino"
+          }
+        }
+      }
+    },
+    "PortPilot %@": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PortPilot %@"
+          }
+        }
+      }
+    },
+    "PortPilot %@ is available": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PortPilot %@ è disponibile"
           }
         }
       }
@@ -1051,12 +1131,112 @@
         }
       }
     },
+    "The download doesn't match its checksum, so it wasn't installed.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il download non corrisponde al checksum, quindi non è stato installato."
+          }
+        }
+      }
+    },
+    "The download is not PortPilot %@.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il download non è PortPilot %@."
+          }
+        }
+      }
+    },
+    "The update couldn't be downloaded.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non è stato possibile scaricare l'aggiornamento."
+          }
+        }
+      }
+    },
+    "This release has no verifiable download.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Questa release non ha un download verificabile."
+          }
+        }
+      }
+    },
     "UDP": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "UDP"
+          }
+        }
+      }
+    },
+    "Up to date": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiornata"
+          }
+        }
+      }
+    },
+    "Update": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Installa"
+          }
+        }
+      }
+    },
+    "Update to %@": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Installa la %@"
+          }
+        }
+      }
+    },
+    "Updates": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiornamenti"
+          }
+        }
+      }
+    },
+    "Updates work in the app from Releases or Homebrew, not with swift run.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gli aggiornamenti funzionano nell'app scaricata dalle Release o da Homebrew, non con swift run."
+          }
+        }
+      }
+    },
+    "What's New": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Novità"
           }
         }
       }

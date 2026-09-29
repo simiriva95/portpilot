@@ -4,6 +4,8 @@ import UniformTypeIdentifiers
 
 struct SettingsView: View {
     @EnvironmentObject private var store: PortStore
+    @EnvironmentObject private var updater: Updater
+    @AppStorage(Prefs.checkForUpdates) private var checkForUpdates = true
     @AppStorage(Prefs.showSystem) private var showSystem = true
     @AppStorage(Prefs.includeUDP) private var includeUDP = false
     @AppStorage(Prefs.confirmBeforeKill) private var confirmBeforeKill = true
@@ -54,6 +56,22 @@ struct SettingsView: View {
                 }
                 .onChange(of: refreshInterval) { _ in store.startPolling() }
             }
+            Section("Updates") {
+                if let version = updater.currentVersion {
+                    Toggle("Check for updates automatically", isOn: $checkForUpdates)
+                    HStack {
+                        Text("PortPilot \(version)")
+                        Spacer()
+                        updateStatus
+                        Button("Check Now") { Task { await updater.check(userInitiated: true) } }
+                            .disabled(updater.state == .checking)
+                    }
+                } else {
+                    Text("Updates work in the app from Releases or Homebrew, not with swift run.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
             Section("Quitting") {
                 Toggle("Ask before quitting a dev server", isOn: $confirmBeforeKill)
                 Text("PortPilot always asks before quitting system or app processes.")
@@ -65,6 +83,25 @@ struct SettingsView: View {
         .frame(width: 460)
         .fixedSize(horizontal: false, vertical: true)
         .tint(theme.accent)
+    }
+
+    @ViewBuilder
+    private var updateStatus: some View {
+        switch updater.state {
+        case .checking:
+            ProgressView().controlSize(.small)
+        case .upToDate:
+            Text("Up to date").foregroundStyle(.secondary)
+        case .available(let release):
+            Button("Update to \(release.version)") { Task { await updater.install(release) } }
+                .buttonStyle(.borderedProminent)
+        case .installing:
+            ProgressView().controlSize(.small)
+        case .failed(let message, _):
+            Text(message).font(.caption).foregroundStyle(Color(nsColor: .systemRed)).lineLimit(2)
+        case .idle:
+            EmptyView()
+        }
     }
 
     // MARK: Theme cards
